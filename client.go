@@ -1,6 +1,7 @@
 package sanity
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -16,6 +17,10 @@ type SanityClient struct {
 	APIVersion string
 }
 
+type ApiResponse struct {
+	Result json.RawMessage `json:"result"`
+}
+
 // CreateClient creates a new Sanity API client.
 func CreateClient(projectID, dataset, token, apiVersion string) (*SanityClient, error) {
 	if projectID == "" {
@@ -27,7 +32,7 @@ func CreateClient(projectID, dataset, token, apiVersion string) (*SanityClient, 
 
 	// Set defaults for optional parameters
 	if apiVersion == "" {
-		apiVersion = time.Now().Format("2006-01-02") // Go uses this specific date as a format layout
+		apiVersion = "v" + time.Now().Format("2006-01-02") // Go uses this specific date as a format layout
 	}
 
 	return &SanityClient{
@@ -40,6 +45,10 @@ func CreateClient(projectID, dataset, token, apiVersion string) (*SanityClient, 
 
 // Fetch executes a GROQ query and returns the results. (Placeholder implementation)
 func (c *SanityClient) Fetch(groqQuery string, queryParams ...map[string]string) (string, error) {
+	if groqQuery == "" {
+		return "", fmt.Errorf("please provide a query")
+	}
+
 	// Construct the URL for the Sanity API
 	baseURL := fmt.Sprintf("https://%s.api.sanity.io/%s/data/query/%s", c.ProjectID, c.APIVersion, c.Dataset)
 
@@ -80,5 +89,11 @@ func (c *SanityClient) Fetch(groqQuery string, queryParams ...map[string]string)
 		return "", fmt.Errorf("error reading response body: %w", err)
 	}
 
-	return string(responseBody), nil
+	var apiResponse ApiResponse
+	err = json.Unmarshal(responseBody, &apiResponse)
+	if err != nil {
+		return "", fmt.Errorf("error parsing JSON: %w", err)
+	}
+
+	return string(apiResponse.Result), nil
 }
