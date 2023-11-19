@@ -34,13 +34,7 @@ Instructions on how to use this client will be provided as the project develops.
 
 ## Contributing
 
-Contributions are welcome! If you're interested in contributing, please:
-
-- Fork the repository
-- Create a feature branch (`git checkout -b feature/AmazingFeature`)
-- Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-- Push to the branch (`git push origin feature/AmazingFeature`)
-- Open a pull request
+Contributions are welcome! For more information on how to contribute, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## License
 
