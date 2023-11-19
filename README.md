@@ -34,7 +34,7 @@ Instructions on how to use this client will be provided as the project develops.
 
 ## Contributing
 
-Contributions are welcome! For more information on how to contribute, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+Contributions are welcome! For more information on how to contribute, please refer to the [CONTRIBUTING](CONTRIBUTING.md) file.
 
 ## License
 
