@@ -109,12 +109,29 @@ func (c *SanityClient) Clone() *SanityClient {
 	}
 }
 
-// Returns the current configuration of the client.
-func (c *SanityClient) Config() SanityClient {
-	return SanityClient{
-		ProjectID:  c.ProjectID,
-		Dataset:    c.Dataset,
-		Token:      c.Token,
-		APIVersion: c.APIVersion,
+// UpdateClient creates a new instance of SanityClient with the updated configuration.
+func (c *SanityClient) UpdateClient(projectID *string, dataset *string, token *string, apiVersion *string) (*SanityClient, error) {
+	// Create a new instance for the updated configuration
+	newClient := *c // Copy existing client
+
+	// Update the configuration as necessary
+	if projectID != nil {
+		newClient.ProjectID = *projectID
 	}
+	if dataset != nil {
+		newClient.Dataset = *dataset
+	}
+	if token != nil {
+		newClient.Token = *token
+	}
+	if apiVersion != nil {
+		newClient.APIVersion = *apiVersion
+	}
+
+	return &newClient, nil
+}
+
+// GetClient returns the current instance of SanityClient.
+func (c *SanityClient) GetClient() *SanityClient {
+	return c
 }
