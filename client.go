@@ -43,39 +43,38 @@ func CreateClient(projectID, dataset, token, apiVersion string) (*SanityClient, 
 	}, nil
 }
 
-// Fetch executes a GROQ query and returns the results. (Placeholder implementation)
 func (c *SanityClient) Fetch(groqQuery string, queryParams ...map[string]string) (string, error) {
+	// Check if the GROQ query is provided
 	if groqQuery == "" {
 		return "", fmt.Errorf("please provide a query")
 	}
 
-	// Construct the URL for the Sanity API
+	// Construct the base URL for the Sanity API
 	baseURL := fmt.Sprintf("https://%s.api.sanity.io/%s/data/query/%s", c.ProjectID, c.APIVersion, c.Dataset)
 
-	// Prepare the full URL with the encoded query and additional parameters
-	params := url.Values{}
-	params.Set("query", groqQuery)
+	// Construct the full URL
+	fullURL := fmt.Sprintf("%s?query=%s", baseURL, url.QueryEscape(groqQuery))
 
+	// Append additional parameters if provided
 	if len(queryParams) > 0 {
 		for key, value := range queryParams[0] {
-			params.Set(key, value)
+			// Prepend '$' to the key and append the parameter to the URL
+			fullURL += fmt.Sprintf("&$%s=\"%s\"", key, url.QueryEscape(value))
 		}
 	}
 
-	fullURL := baseURL + "?" + params.Encode()
-
-	// Create a new HTTP request
+	// Create a new HTTP GET request with the constructed URL
 	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
 		return "", fmt.Errorf("error creating request: %w", err)
 	}
 
+	// Add Authorization header if a token is provided
 	if c.Token != "" {
-		// Add necessary headers
 		req.Header.Add("Authorization", "Bearer "+c.Token)
 	}
 
-	// Execute the request
+	// Execute the HTTP request
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -83,17 +82,19 @@ func (c *SanityClient) Fetch(groqQuery string, queryParams ...map[string]string)
 	}
 	defer resp.Body.Close()
 
-	// Read and return the response
+	// Read the response body
 	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("error reading response body: %w", err)
 	}
 
+	// Parse the JSON response
 	var apiResponse ApiResponse
 	err = json.Unmarshal(responseBody, &apiResponse)
 	if err != nil {
 		return "", fmt.Errorf("error parsing JSON: %w", err)
 	}
 
+	// Return the result part of the response
 	return string(apiResponse.Result), nil
 }
