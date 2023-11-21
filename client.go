@@ -108,3 +108,13 @@ func (c *SanityClient) Clone() *SanityClient {
 		APIVersion: c.APIVersion,
 	}
 }
+
+// Returns the current configuration of the client.
+func (c *SanityClient) Config() SanityClient {
+	return SanityClient{
+		ProjectID:  c.ProjectID,
+		Dataset:    c.Dataset,
+		Token:      c.Token,
+		APIVersion: c.APIVersion,
+	}
+}
