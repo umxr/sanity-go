@@ -98,3 +98,13 @@ func (c *SanityClient) Fetch(groqQuery string, queryParams ...map[string]string)
 	// Return the result part of the response
 	return string(apiResponse.Result), nil
 }
+
+// Clone creates a new instance of SanityClient with the same configuration.
+func (c *SanityClient) Clone() *SanityClient {
+	return &SanityClient{
+		ProjectID:  c.ProjectID,
+		Dataset:    c.Dataset,
+		Token:      c.Token,
+		APIVersion: c.APIVersion,
+	}
+}
