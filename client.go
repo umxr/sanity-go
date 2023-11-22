@@ -147,3 +147,15 @@ func (c *SanityClient) GetDocument(documentID string) (string, error) {
 	}
 	return document, nil
 }
+
+// GetDocuments returns the documents with the specified IDs.
+func (c *SanityClient) GetDocuments(documentIDs []string) (string, error) {
+	params := map[string]string{
+		"ids": fmt.Sprintf("[%s]", documentIDs),
+	}
+	documents, err := c.Fetch("*[_id in $ids]", params)
+	if err != nil {
+		return "", err
+	}
+	return documents, nil
+}
