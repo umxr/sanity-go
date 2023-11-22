@@ -135,3 +135,15 @@ func (c *SanityClient) UpdateClient(projectID *string, dataset *string, token *s
 func (c *SanityClient) GetClient() *SanityClient {
 	return c
 }
+
+// GetDocument returns the document with the specified ID.
+func (c *SanityClient) GetDocument(documentID string) (string, error) {
+	params := map[string]string{
+		"id": documentID,
+	}
+	document, err := c.Fetch("*[_id == $id][0]", params)
+	if err != nil {
+		return "", err
+	}
+	return document, nil
+}
